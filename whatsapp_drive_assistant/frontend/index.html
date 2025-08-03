@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WhatsApp Drive Assistant</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    #response {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Drive Assistant</h2>
+    <input type="text" id="command" placeholder="Type a command (LIST, DELETE, MOVE...)" />
+    <button onclick="sendCommand()">Send</button>
+    <p id="response"></p>
+  </div>
+
+  <script>
+    async function sendCommand() {
+      const command = document.getElementById("command").value;
+      const responseBox = document.getElementById("response");
+
+      const res = await fetch("http://127.0.0.1:8000/api/whatsapp-webhook/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ Body: command })
+      });
+
+      const data = await res.json();
+      responseBox.textContent = data.message || data.error || "No response";
+    }
+  </script>
+</body>
+</html>
